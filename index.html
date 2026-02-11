@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Offertepilot — Van briefing naar offerte in 2 minuten</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --bg: #0a0f1a;
+  --bg-card: #111827;
+  --bg-card-hover: #1a2332;
+  --accent: #0a84ff;
+  --accent-glow: rgba(10,132,255,0.15);
+  --accent-hover: #3d9eff;
+  --green: #30d158;
+  --orange: #ff9f0a;
+  --text: #f1f5f9;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+  --border: rgba(255,255,255,0.08);
+  --radius: 12px;
+}
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== NAV ===== */
+nav {
+  position: fixed; top:0; left:0; right:0; z-index:100;
+  background: rgba(10,15,26,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 800; font-size: 1.15rem; color: white;
+  text-decoration: none;
+}
+.nav-logo span { color: var(--accent); }
+.nav-links { display: flex; gap: 2rem; align-items: center; }
+.nav-links a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
+.nav-links a:hover { color: white; }
+.nav-cta {
+  background: var(--accent); color: white; padding: 8px 20px;
+  border-radius: 8px; font-weight: 600; font-size: 0.85rem;
+  text-decoration: none; transition: all 0.2s;
+}
+.nav-cta:hover { background: var(--accent-hover); transform: translateY(-1px); }
+
+/* ===== HERO ===== */
+.hero {
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center;
+  padding: 120px 2rem 80px;
+  position: relative;
+}
+.hero::before {
+  content: '';
+  position: absolute; top: -50%; left: -50%; right: -50%; bottom: -50%;
+  background: radial-gradient(circle at 50% 30%, rgba(10,132,255,0.08) 0%, transparent 50%),
+              radial-gradient(circle at 30% 70%, rgba(48,209,88,0.04) 0%, transparent 40%);
+  pointer-events: none;
+}
+.hero-content { position: relative; max-width: 800px; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(10,132,255,0.1); border: 1px solid rgba(10,132,255,0.2);
+  padding: 6px 16px; border-radius: 100px;
+  font-size: 0.8rem; color: var(--accent); font-weight: 500;
+  margin-bottom: 2rem;
+}
+.hero-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+.hero h1 {
+  font-size: clamp(2.5rem, 6vw, 4.2rem);
+  font-weight: 900; line-height: 1.1;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.03em;
+}
+.hero h1 .highlight {
+  background: linear-gradient(135deg, var(--accent), #60a5fa);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.hero p {
+  font-size: 1.2rem; color: var(--text-muted);
+  max-width: 600px; margin: 0 auto 2.5rem;
+  line-height: 1.7;
+}
+.hero-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--accent); color: white;
+  padding: 14px 32px; border-radius: 10px;
+  font-weight: 700; font-size: 1rem;
+  text-decoration: none; transition: all 0.3s;
+  box-shadow: 0 0 30px rgba(10,132,255,0.3);
+}
+.btn-primary:hover { background: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 0 40px rgba(10,132,255,0.4); }
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: transparent; color: var(--text-muted);
+  padding: 14px 32px; border-radius: 10px;
+  font-weight: 600; font-size: 1rem;
+  text-decoration: none; border: 1px solid var(--border);
+  transition: all 0.3s;
+}
+.btn-secondary:hover { color: white; border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.03); }
+
+.hero-sub {
+  margin-top: 1.5rem;
+  font-size: 0.85rem; color: var(--text-dim);
+  display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;
+}
+.hero-sub span { display: flex; align-items: center; gap: 6px; }
+
+/* ===== DEMO SECTION ===== */
+.demo-section {
+  padding: 80px 2rem;
+  max-width: 1100px; margin: 0 auto;
+}
+.demo-window {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+}
+.demo-titlebar {
+  display: flex; align-items: center; gap: 8px;
+  padding: 14px 18px;
+  background: rgba(0,0,0,0.3);
+  border-bottom: 1px solid var(--border);
+}
+.demo-dot { width: 12px; height: 12px; border-radius: 50%; }
+.demo-dot.r { background: #ff5f56; }
+.demo-dot.y { background: #ffbd2e; }
+.demo-dot.g { background: #27c93f; }
+.demo-titlebar span { flex:1; text-align:center; font-size:0.8rem; color:var(--text-dim); }
+
+.demo-body { display: grid; grid-template-columns: 1fr 1fr; min-height: 420px; }
+.demo-input, .demo-output { padding: 2rem; }
+.demo-input { border-right: 1px solid var(--border); }
+.demo-label { font-size: 0.75rem; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; }
+.demo-textarea {
+  width: 100%; background: rgba(0,0,0,0.2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 1rem; color: var(--text); font-family: inherit;
+  font-size: 0.9rem; resize: none; min-height: 280px; line-height: 1.6;
+}
+.demo-textarea::placeholder { color: var(--text-dim); }
+
+.demo-output-content {
+  background: rgba(0,0,0,0.2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 1.5rem; min-height: 280px;
+}
+.demo-output-content h4 { font-size: 1rem; color: var(--accent); margin-bottom: 0.5rem; }
+.demo-output-content p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.8rem; line-height: 1.6; }
+.demo-output-content .price-line { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+.demo-output-content .price-total { font-weight: 700; color: var(--green); border-bottom: none; margin-top: 4px; }
+
+.demo-generate-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; margin-top: 1rem; padding: 12px;
+  background: linear-gradient(135deg, var(--accent), #0066cc);
+  border: none; border-radius: 8px; color: white; font-weight: 700;
+  font-size: 0.9rem; cursor: pointer; transition: all 0.3s;
+}
+.demo-generate-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+/* ===== FEATURES ===== */
+.features {
+  padding: 100px 2rem;
+  max-width: 1200px; margin: 0 auto;
+}
+.section-header {
+  text-align: center; margin-bottom: 4rem;
+}
+.section-header h2 {
+  font-size: 2.5rem; font-weight: 800; letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+}
+.section-header p { color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto; }
+
+.features-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+.feature-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  transition: all 0.3s;
+}
+.feature-card:hover { border-color: rgba(10,132,255,0.3); background: var(--bg-card-hover); transform: translateY(-2px); }
+.feature-icon {
+  width: 48px; height: 48px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--accent-glow); border-radius: 10px;
+  font-size: 1.3rem; margin-bottom: 1.2rem;
+}
+.feature-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.6rem; }
+.feature-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
+
+/* ===== HOW IT WORKS ===== */
+.how-it-works {
+  padding: 100px 2rem;
+  background: linear-gradient(180deg, transparent, rgba(10,132,255,0.03), transparent);
+}
+.steps-container { max-width: 900px; margin: 0 auto; }
+.step {
+  display: grid; grid-template-columns: 60px 1fr; gap: 1.5rem;
+  margin-bottom: 3rem; position: relative;
+}
+.step::after {
+  content: ''; position: absolute; left: 29px; top: 60px; bottom: -24px;
+  width: 2px; background: var(--border);
+}
+.step:last-child::after { display: none; }
+.step-number {
+  width: 60px; height: 60px; border-radius: 14px;
+  background: var(--accent-glow); border: 1px solid rgba(10,132,255,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; font-weight: 800; color: var(--accent);
+}
+.step-content h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; }
+.step-content p { color: var(--text-muted); font-size: 1rem; line-height: 1.7; }
+
+/* ===== PRICING ===== */
+.pricing {
+  padding: 100px 2rem;
+  max-width: 1200px; margin: 0 auto;
+}
+.pricing-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+}
+.pricing-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  transition: all 0.3s;
+  position: relative;
+}
+.pricing-card.popular {
+  border-color: var(--accent);
+  box-shadow: 0 0 40px rgba(10,132,255,0.15);
+}
+.pricing-card.popular::before {
+  content: 'Populair';
+  position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+  background: var(--accent); color: white; padding: 4px 16px;
+  border-radius: 100px; font-size: 0.75rem; font-weight: 700;
+}
+.pricing-name { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; }
+.pricing-price { font-size: 2.5rem; font-weight: 900; margin-bottom: 0.25rem; }
+.pricing-price span { font-size: 1rem; font-weight: 400; color: var(--text-muted); }
+.pricing-desc { font-size: 0.85rem; color: var(--text-dim); margin-bottom: 1.5rem; }
+.pricing-features { list-style: none; margin-bottom: 2rem; }
+.pricing-features li {
+  display: flex; align-items: flex-start; gap: 8px;
+  font-size: 0.85rem; color: var(--text-muted); padding: 4px 0;
+}
+.pricing-features li::before { content: '✓'; color: var(--green); font-weight: 700; }
+.pricing-btn {
+  display: block; text-align: center; padding: 12px;
+  border-radius: 8px; font-weight: 600; font-size: 0.9rem;
+  text-decoration: none; transition: all 0.3s;
+  border: 1px solid var(--border); color: var(--text);
+}
+.pricing-btn:hover { border-color: var(--accent); color: var(--accent); }
+.pricing-card.popular .pricing-btn {
+  background: var(--accent); border-color: var(--accent); color: white;
+}
+.pricing-card.popular .pricing-btn:hover { background: var(--accent-hover); }
+
+/* ===== SOCIAL PROOF ===== */
+.social-proof {
+  padding: 80px 2rem;
+  text-align: center;
+}
+.stats-row {
+  display: flex; justify-content: center; gap: 4rem; flex-wrap: wrap;
+  margin-top: 2rem;
+}
+.stat { text-align: center; }
+.stat-number { font-size: 2.5rem; font-weight: 900; color: var(--accent); }
+.stat-label { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
+
+/* ===== CTA ===== */
+.final-cta {
+  padding: 100px 2rem;
+  text-align: center;
+  position: relative;
+}
+.final-cta::before {
+  content: '';
+  position: absolute; top:0; left:0; right:0; bottom:0;
+  background: radial-gradient(circle at 50% 50%, rgba(10,132,255,0.08), transparent 60%);
+  pointer-events: none;
+}
+.final-cta h2 { font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; position: relative; }
+.final-cta p { color: var(--text-muted); font-size: 1.1rem; margin-bottom: 2.5rem; position: relative; }
+
+/* ===== FOOTER ===== */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 3rem 2rem;
+  text-align: center;
+  color: var(--text-dim); font-size: 0.85rem;
+}
+footer a { color: var(--text-muted); text-decoration: none; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+  .features-grid { grid-template-columns: 1fr 1fr; }
+  .pricing-grid { grid-template-columns: 1fr 1fr; }
+  .demo-body { grid-template-columns: 1fr; }
+  .demo-input { border-right: none; border-bottom: 1px solid var(--border); }
+}
+@media (max-width: 600px) {
+  .features-grid, .pricing-grid { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+  .hero h1 { font-size: 2.2rem; }
+  .stats-row { gap: 2rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">📄⚡ Offerte<span>pilot</span></a>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#hoe-het-werkt">Hoe het werkt</a>
+    <a href="#pricing">Prijzen</a>
+    <a href="#" class="nav-cta">Gratis starten →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="dot"></span>
+      Nu beschikbaar voor early access
+    </div>
+    <h1>
+      Van briefing naar offerte<br>
+      <span class="highlight">in 2 minuten</span>
+    </h1>
+    <p>
+      Typ wat je gaat doen. Onze AI schrijft een professionele offerte die je klant overtuigt. Geen templates invullen, geen tijdverspilling.
+    </p>
+    <div class="hero-buttons">
+      <a href="#" class="btn-primary">
+        Gratis proberen →
+      </a>
+      <a href="#demo" class="btn-secondary">
+        ▶ Bekijk demo
+      </a>
+    </div>
+    <div class="hero-sub">
+      <span>✓ 3 offertes/maand gratis</span>
+      <span>✓ Geen creditcard nodig</span>
+      <span>✓ 100% Nederlands</span>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO -->
+<section class="demo-section" id="demo">
+  <div class="demo-window">
+    <div class="demo-titlebar">
+      <div class="demo-dot r"></div>
+      <div class="demo-dot y"></div>
+      <div class="demo-dot g"></div>
+      <span>offertepilot.nl — Nieuwe offerte</span>
+    </div>
+    <div class="demo-body">
+      <div class="demo-input">
+        <div class="demo-label">📝 Jouw briefing</div>
+        <textarea class="demo-textarea" readonly>Website redesign voor een lokale bakkerij in Amsterdam. Zij willen een moderne uitstraling, online bestelmodule, en SEO-optimalisatie. Budget rond de €4.000. Oplevering binnen 6 weken. WordPress met custom design.</textarea>
+        <button class="demo-generate-btn">⚡ Genereer offerte</button>
+      </div>
+      <div class="demo-output">
+        <div class="demo-label">📄 Gegenereerde offerte</div>
+        <div class="demo-output-content">
+          <h4>Offerte: Website Redesign — Bakkerij Amsterdam</h4>
+          <p>Geachte klant, graag presenteren wij onze aanpak voor de redesign van uw website. Wij realiseren een modern, converterend platform dat uw ambachtelijke bakkerij online tot leven brengt.</p>
+          <p><strong>Scope & Deliverables:</strong></p>
+          <div class="price-line"><span>UX/UI Design (custom)</span><span>€1.200</span></div>
+          <div class="price-line"><span>WordPress Development</span><span>€1.600</span></div>
+          <div class="price-line"><span>Online bestelmodule</span><span>€800</span></div>
+          <div class="price-line"><span>SEO-optimalisatie</span><span>€400</span></div>
+          <div class="price-line price-total"><span>Totaal (excl. BTW)</span><span>€4.000</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="section-header">
+    <h2>Alles wat je nodig hebt</h2>
+    <p>Professionele offertes zonder het gedoe. AI doet het zware werk, jij houdt de controle.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🤖</div>
+      <h3>AI die je vak snapt</h3>
+      <p>Getraind op 10+ branches. Van IT tot bouw, marketing tot design — de AI kent je terminologie en levert relevante offertes.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📄</div>
+      <h3>Professionele PDF's</h3>
+      <p>Strakke layouts met jouw branding. Logo, kleuren, contactgegevens — alles automatisch. Direct klaar om te versturen.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <h3>Klaar in 2 minuten</h3>
+      <p>Geen eindeloos templates invullen. Typ je briefing in eigen woorden, de AI doet de rest. Van idee naar verzendklare offerte.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <h3>Tracking & Inzicht</h3>
+      <p>Weet wanneer je klant je offerte opent. Ontvang notificaties en verbeter je hit-rate met data-driven inzichten.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔗</div>
+      <h3>Integraties</h3>
+      <p>Koppel met Moneybird, e-Boekhouden en meer. Factuur aanmaken na akkoord? Eén klik. Binnenkort ook met ORBIT projectmanagement.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🇳🇱</div>
+      <h3>100% Nederlands</h3>
+      <p>Geen Google Translate-taaltje. Geschreven door een AI die Nederlands begrijpt. Juridisch correct, zakelijk professioneel.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-it-works" id="hoe-het-werkt">
+  <div class="section-header">
+    <h2>Hoe het werkt</h2>
+    <p>Drie stappen. Twee minuten. Eén professionele offerte.</p>
+  </div>
+  <div class="steps-container">
+    <div class="step">
+      <div class="step-number">1</div>
+      <div class="step-content">
+        <h3>Beschrijf je project</h3>
+        <p>Typ in je eigen woorden wat je gaat doen. Geen formulieren, geen verplichte velden. Gewoon vertellen — alsof je het aan een collega uitlegt. De AI haalt er alles uit.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-number">2</div>
+      <div class="step-content">
+        <h3>Review & pas aan</h3>
+        <p>De AI genereert een complete offerte met scope, planning, prijsopbouw en voorwaarden. Pas alles aan wat je wilt — of verstuur direct als het goed is.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-number">3</div>
+      <div class="step-content">
+        <h3>Verstuur als PDF</h3>
+        <p>Download een strakke PDF met jouw branding, of stuur direct via email vanuit Offertepilot. Track of je klant het opent en wanneer.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="section-header">
+    <h2>Simpele prijzen</h2>
+    <p>Start gratis. Upgrade wanneer je groeit. Geen verrassingen.</p>
+  </div>
+  <div class="pricing-grid">
+    <div class="pricing-card">
+      <div class="pricing-name">Free</div>
+      <div class="pricing-price">€0<span>/maand</span></div>
+      <div class="pricing-desc">Om uit te proberen</div>
+      <ul class="pricing-features">
+        <li>3 offertes per maand</li>
+        <li>1 template</li>
+        <li>PDF export</li>
+        <li>Offertepilot branding op PDF</li>
+      </ul>
+      <a href="#" class="pricing-btn">Gratis starten</a>
+    </div>
+    <div class="pricing-card">
+      <div class="pricing-name">Starter</div>
+      <div class="pricing-price">€9<span>.99/maand</span></div>
+      <div class="pricing-desc">Voor ZZP'ers</div>
+      <ul class="pricing-features">
+        <li>15 offertes per maand</li>
+        <li>Alle templates</li>
+        <li>Eigen branding op PDF</li>
+        <li>Offerte tracking</li>
+        <li>Email support</li>
+      </ul>
+      <a href="#" class="pricing-btn">Start nu</a>
+    </div>
+    <div class="pricing-card popular">
+      <div class="pricing-name">Pro</div>
+      <div class="pricing-price">€24<span>.99/maand</span></div>
+      <div class="pricing-desc">Populair bij freelancers</div>
+      <ul class="pricing-features">
+        <li>Onbeperkt offertes</li>
+        <li>Alle templates + custom</li>
+        <li>Volledige branding</li>
+        <li>Klantenbeheer (CRM)</li>
+        <li>Analytics dashboard</li>
+        <li>Prioriteit support</li>
+      </ul>
+      <a href="#" class="pricing-btn">Start nu</a>
+    </div>
+    <div class="pricing-card">
+      <div class="pricing-name">Business</div>
+      <div class="pricing-price">€49<span>.99/maand</span></div>
+      <div class="pricing-desc">Voor teams</div>
+      <ul class="pricing-features">
+        <li>Alles van Pro</li>
+        <li>5 teamleden</li>
+        <li>API access</li>
+        <li>Moneybird integratie</li>
+        <li>E-signature</li>
+        <li>Dedicated support</li>
+      </ul>
+      <a href="#" class="pricing-btn">Contact opnemen</a>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL PROOF -->
+<section class="social-proof">
+  <div class="section-header">
+    <h2>Gebouwd voor ondernemers</h2>
+    <p>De gemiddelde ZZP'er besteedt 3+ uur per week aan offertes. Dat is 150+ uur per jaar. Wij geven je die tijd terug.</p>
+  </div>
+  <div class="stats-row">
+    <div class="stat">
+      <div class="stat-number">&lt;2 min</div>
+      <div class="stat-label">Gemiddelde generatietijd</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number">10+</div>
+      <div class="stat-label">Branche-templates</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number">150 uur</div>
+      <div class="stat-label">Bespaard per jaar</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number">100%</div>
+      <div class="stat-label">Nederlands</div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <h2>Klaar om je eerste offerte te schrijven?</h2>
+  <p>Jij bent ondernemer geworden om je vak uit te oefenen — niet om offertes te schrijven.</p>
+  <a href="#" class="btn-primary" style="position:relative;">Gratis proberen — het kost 0 minuten →</a>
+  <div class="hero-sub" style="margin-top:1.5rem; position:relative;">
+    <span>✓ Geen creditcard</span>
+    <span>✓ 3 gratis offertes</span>
+    <span>✓ Direct aan de slag</span>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 Offertepilot — Een product van <a href="https://sircle.dev">Sircle Solutions</a></p>
+  <p style="margin-top:8px;">
+    <a href="#">Privacy</a> · <a href="#">Voorwaarden</a> · <a href="#">Contact</a>
+  </p>
+</footer>
+
+</body>
+</html>
